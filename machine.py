@@ -11,11 +11,17 @@ class Coffee:
         count_milk = self.milk // min_milk
         count_coffee = self.bean // min_bean
         cup_count = min(count_water, count_milk, count_coffee)
-        return cup_count
+
+        if count_water==cup_count:
+            return cup_count,'water'
+        if count_milk==cup_count:
+            return cup_count, 'milk'
+        if count_coffee==cup_count:
+            return  cup_count, 'bean'
 
     def check_machine(self, water, milk, bean):
-        cup_count = self.cump_num(water, milk, bean)
-        if cup_count == 1:
+        cup_count,res = self.cump_num(water, milk, bean)
+        if cup_count >= 1:
             return True
         else:
             return False
@@ -37,7 +43,8 @@ class Action(Coffee):
                 self.cost = self.cost + 4
                 self.cup -= 1
             else:
-                print("Sorry, not enough water!")
+                respon,res=self.cump_num(250,1,16)
+                print("Sorry, not enough {}!".format(res))
 
         if chose == '2':
             response = self.check_machine(350, 75, 20)
@@ -49,10 +56,11 @@ class Action(Coffee):
                 self.cost = self.cost + 7
                 self.cup -= 1
             else:
-                print("Sorry, not enough water!")
+                respon , res = self.cump_num(350, 75, 20)
+                print("Sorry, not enough {}!".format(res))
 
         if chose == '3':
-            response = self.check_machine(350, 75, 20)
+            response = self.check_machine(200, 100, 12)
             if response == True:
                 print("I have enough resources, making you a coffee!")
                 self.water = self.water - 200
@@ -61,10 +69,11 @@ class Action(Coffee):
                 self.cost = self.cost + 6
                 self.cup -= 1
             else:
-                print("Sorry, not enough water!")
+                respon, res = self.cump_num(200, 100, 12)
+                print("Sorry, not enough {}!".format(res))
 
         if chose == 'back':
-            self.state()
+            self.action()
 
     def fill(self):
         self.water = self.water + int(input("Write how many ml of water do you want to add:\n"))
@@ -81,33 +90,35 @@ class Action(Coffee):
               "{1} of milk\n {2} of coffee beans\n "
               "{3} of disposable cups\n {4} of money".format(self.water, self.milk, self.bean, self.cup, self.cost))
 
+    def action(self):
+        ac=input("Write action (buy, fill, take,remaining, exit):\n")
+        if ac=="buy":
+            self.buy()
+        if ac=="fill":
+            self.fill()
+        if ac=="take":
+            self.take()
+        if ac=="remaining":
+            self.state()
+            return "remaining"
+        if ac=="exit":
+            return "exit"    
+        
+    
+    
 
-def action(machine):
-    action = input("Write action (buy, fill, take, remaining, exit):\n")
-    if action == 'buy':
-        machine.buy()
-    if action == 'fill':
-        machine.fill()
-    if action == 'take':
-        machine.take()
-    if action == 'remaining':
-        return 'remaining'
-    if action == 'exit':
-        return 'exit'
 
 
 def main():
     loop = True
     machine = Action(400, 540, 120, 550, 9)
     while loop:
-
-        print(machine.state())
-        response = action(machine)
-        if response == 'exit':
+        response = machine.action()
+        if response == "exit":
             break
-        elif response == 'remaining':
-            continue
-            print(machine.state())
+        
+            
+            
 
 
 
